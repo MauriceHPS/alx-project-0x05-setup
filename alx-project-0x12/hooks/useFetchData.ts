@@ -10,7 +10,6 @@ const useFetchData = <T, R>() => {
   const fetchData = async (endpoint: string, body: R) => {
     setIsLoading(true);
     setError(null);
-
     try {
       const resp = await fetch(endpoint, {
         method: "POST",
@@ -21,20 +20,15 @@ const useFetchData = <T, R>() => {
       });
 
       if (!resp.ok) {
-        throw new Error("Failed to fetch data.");
+        throw new Error("Failed to fetch data");
       }
 
       const result = await resp.json();
       setResponseData(result);
-
-      const url = result?.message || result?.data?.[0]?.url;
-
-      if (url) {
-        setGeneratedImages((prev) => [
-          ...prev,
-          { imageUrl: url, prompt: body.prompt },
-        ]);
-      }
+      setGeneratedImages((prev) => [
+        ...prev,
+        { imageUrl: result?.message, prompt: body?.prompt },
+      ]);
     } catch (err) {
       setError((err as Error).message);
     } finally {
